@@ -1,0 +1,33 @@
+package com.alaminkarno.blogxpress.entities;
+
+import jakarta.persistence.*;
+
+import java.util.Date;
+
+@Entity
+@Table(name = "posts")
+public class Post {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    private String title;
+
+    @Column(length = 10000)
+    private String content;
+
+    private String image;
+
+    private Date created;
+
+    private Date updated;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+}

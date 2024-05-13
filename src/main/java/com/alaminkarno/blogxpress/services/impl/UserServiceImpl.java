@@ -6,7 +6,6 @@ import com.alaminkarno.blogxpress.payloads.UserDto;
 import com.alaminkarno.blogxpress.repositories.UserRepository;
 import com.alaminkarno.blogxpress.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -26,6 +26,15 @@ public class PostController {
         return new ResponseEntity<>(newPostDto, HttpStatus.CREATED);
     }
 
+    // PUT: UPDATE POST
+    @PutMapping("/posts/{postId}")
+    public ResponseEntity<PostDto> updatePost(@Valid @RequestBody PostDto postDto, @PathVariable Integer postId){
+
+        PostDto updatedPostDto = this.postService.updatePost(postDto,postId);
+
+        return new ResponseEntity<>(updatedPostDto, HttpStatus.OK);
+    }
+
     // DELETE: DELETE POST
     @DeleteMapping("/posts/{postId}")
     public ResponseEntity<ApiResponse> deletePost(@PathVariable Integer postId){

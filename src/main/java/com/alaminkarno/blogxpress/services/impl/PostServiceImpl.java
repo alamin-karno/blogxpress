@@ -5,7 +5,6 @@ import com.alaminkarno.blogxpress.entities.Post;
 import com.alaminkarno.blogxpress.entities.User;
 import com.alaminkarno.blogxpress.exceptions.ResourceNotFoundException;
 import com.alaminkarno.blogxpress.payloads.PostDto;
-import com.alaminkarno.blogxpress.payloads.UserDto;
 import com.alaminkarno.blogxpress.repositories.CategoryRepository;
 import com.alaminkarno.blogxpress.repositories.PostRepository;
 import com.alaminkarno.blogxpress.repositories.UserRepository;
@@ -58,11 +57,9 @@ public class PostServiceImpl implements PostService {
         Post post = this.postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post","Id",postId));
 
         post.setTitle(postDto.getTitle());
-        post.setContent(postDto.getTitle());
+        post.setContent(postDto.getContent());
         post.setImage(postDto.getImage());
         post.setUpdated(new Date());
-        post.setUser(this.modelMapper.map(postDto.getUser(), User.class));
-        post.setCategory(this.modelMapper.map(postDto.getCategory(),Category.class));
 
         Post updatedPost = this.postRepository.save(post);
 

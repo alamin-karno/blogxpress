@@ -5,13 +5,18 @@ import com.alaminkarno.blogxpress.entities.Post;
 import com.alaminkarno.blogxpress.entities.User;
 import com.alaminkarno.blogxpress.exceptions.ResourceNotFoundException;
 import com.alaminkarno.blogxpress.payloads.PostDto;
+import com.alaminkarno.blogxpress.payloads.PostResponse;
 import com.alaminkarno.blogxpress.repositories.CategoryRepository;
 import com.alaminkarno.blogxpress.repositories.PostRepository;
 import com.alaminkarno.blogxpress.repositories.UserRepository;
 import com.alaminkarno.blogxpress.services.PostService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
 
 import java.util.Date;
 import java.util.List;
@@ -75,11 +80,24 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostDto> getAllPosts() {
+    public PostResponse getAllPosts(Integer pageNumber, Integer pageSize) {
 
-        List<Post> posts = this.postRepository.findAll();
+        Pageable pageable = PageRequest.of(pageNumber,pageSize);
 
-        return posts.stream().map(this::postToDto).collect(Collectors.toList());
+        Page<Post> pagePost = this.postRepository.findAll(pageable);
+        List<Post> posts = pagePost.getContent();
+
+        List<PostDto> postDtoList = posts.stream().map(this::postToDto).toList();
+
+        PostResponse postResponse = new PostResponse();
+        postResponse.setContent(postDtoList);
+        postResponse.setPageNumber(pagePost.getNumber());
+        postResponse.setPageSize(pagePost.getSize());
+        postResponse.setTotalElements(pagePost.getTotalElements());
+        postResponse.setTotalPages(pagePost.getTotalPages());
+        postResponse.setLastPage(pagePost.isLast());
+
+        return postResponse;
     }
 
     @Override

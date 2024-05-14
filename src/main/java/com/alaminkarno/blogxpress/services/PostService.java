@@ -3,6 +3,7 @@ package com.alaminkarno.blogxpress.services;
 import com.alaminkarno.blogxpress.entities.Category;
 import com.alaminkarno.blogxpress.entities.Post;
 import com.alaminkarno.blogxpress.payloads.PostDto;
+import com.alaminkarno.blogxpress.payloads.PostResponse;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ public interface PostService {
 
     void deletePost(Integer postId);
 
-    List<PostDto> getAllPosts();
+    PostResponse getAllPosts(Integer pageNumber, Integer pageSize);
 
     PostDto getPostById(Integer postId);
 

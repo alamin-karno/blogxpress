@@ -2,6 +2,7 @@ package com.alaminkarno.blogxpress.controllers;
 
 import com.alaminkarno.blogxpress.payloads.ApiResponse;
 import com.alaminkarno.blogxpress.payloads.PostDto;
+import com.alaminkarno.blogxpress.payloads.PostResponse;
 import com.alaminkarno.blogxpress.services.PostService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,10 +44,13 @@ public class PostController {
     }
 
     // GET: GET ALL POSTS
-    @GetMapping("/posts/")
-    public ResponseEntity<List<PostDto>> getAllPosts(){
-        List<PostDto> postDtoList = this.postService.getAllPosts();
-        return new ResponseEntity<>(postDtoList, HttpStatus.OK);
+    @GetMapping("/posts")
+    public ResponseEntity<PostResponse> getAllPosts(
+            @RequestParam(value = "pageNumber",defaultValue = "0",required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize",defaultValue = "10",required = false) Integer pageSize){
+
+        PostResponse postResponse = this.postService.getAllPosts(pageNumber,pageSize);
+        return new ResponseEntity<>(postResponse, HttpStatus.OK);
     }
 
     // GET: GET POST BY ID

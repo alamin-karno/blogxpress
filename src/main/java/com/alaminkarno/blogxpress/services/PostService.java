@@ -15,7 +15,7 @@ public interface PostService {
 
     void deletePost(Integer postId);
 
-    PostResponse getAllPosts(Integer pageNumber, Integer pageSize, String sortBy);
+    PostResponse getAllPosts(Integer pageNumber, Integer pageSize, String sortBy,String orderBy);
 
     PostDto getPostById(Integer postId);
 

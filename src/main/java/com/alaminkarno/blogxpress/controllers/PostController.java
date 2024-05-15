@@ -1,5 +1,6 @@
 package com.alaminkarno.blogxpress.controllers;
 
+import com.alaminkarno.blogxpress.config.AppConstants;
 import com.alaminkarno.blogxpress.payloads.ApiResponse;
 import com.alaminkarno.blogxpress.payloads.PostDto;
 import com.alaminkarno.blogxpress.payloads.PostResponse;
@@ -46,10 +47,10 @@ public class PostController {
     // GET: GET ALL POSTS
     @GetMapping("/posts")
     public ResponseEntity<PostResponse> getAllPosts(
-            @RequestParam(value = "pageNumber",defaultValue = "0",required = false) Integer pageNumber,
-            @RequestParam(value = "pageSize",defaultValue = "10",required = false) Integer pageSize,
-            @RequestParam(value = "sortBy",defaultValue = "id",required = false) String sortBy,
-            @RequestParam(value = "orderBy",defaultValue = "ASC",required = false) String orderBy){
+            @RequestParam(value = "pageNumber",defaultValue = AppConstants.PAGE_NUMBER, required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize",defaultValue = AppConstants.PAGE_SIZE, required = false) Integer pageSize,
+            @RequestParam(value = "sortBy",defaultValue = AppConstants.SORT_BY, required = false) String sortBy,
+            @RequestParam(value = "orderBy",defaultValue = AppConstants.ORDER_BY, required = false) String orderBy){
 
         PostResponse postResponse = this.postService.getAllPosts(pageNumber,pageSize,sortBy,orderBy);
         return new ResponseEntity<>(postResponse, HttpStatus.OK);

@@ -3,10 +3,13 @@ package com.alaminkarno.blogxpress.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 
+import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,7 +20,8 @@ public class JWTTokenHelper {
 
     public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60;
 
-    private final String secret = "jwtTokenKey";
+    @Value("${jwt.secret}")
+    private String secret;
     
     // Retrieve Username Form JWT Token
     public String getUsernameFromToken(String token){
@@ -34,14 +38,24 @@ public class JWTTokenHelper {
         return claimsResolver.apply(claims);
     }
 
+    // Generate signing key
+    private Key getSigningKey() {
+        return Keys.hmacShaKeyFor(secret.getBytes());
+    }
+
+
     // For retrieving any information from token we will need the secret key
     private Claims getAllClaimsFromToken(String token) {
-        return Jwts.parser()
-                .setSigningKey(secret)
-                .build()
-                .parseSignedClaims(token)
-                .getBody();
-
+        try {
+            return Jwts.parserBuilder()
+                    .setSigningKey(getSigningKey())
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (Exception e) {
+            // Add logging or throw a custom exception
+            throw new RuntimeException("Invalid JWT token", e);
+        }
     }
 
     // Check if the token has expired
@@ -60,10 +74,14 @@ public class JWTTokenHelper {
     // 1. Define claims of the token, like issuer, expiration, subject and the ID
     // 2. Sign the JWT using the HS512 algorithm and secret key
     // 3. According to JWS Compact Serialization
-    private String doGenerateToken(Map<String,Object> claims,String subject){
-        return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
+    private String doGenerateToken(Map<String, Object> claims, String subject) {
+        return Jwts.builder()
+                .setClaims(claims)
+                .setSubject(subject)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
-                .signWith(SignatureAlgorithm.HS512,secret).compact();
+                .signWith(getSigningKey(), SignatureAlgorithm.HS512)
+                .compact();
     }
 
     // Validate Token

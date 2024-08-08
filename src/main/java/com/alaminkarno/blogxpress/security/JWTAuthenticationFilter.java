@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -44,10 +45,13 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
                 username =  this.jwtTokenHelper.getUsernameFromToken(jwtToken);
             } catch (IllegalArgumentException e){
                 logger.error("Unable to get JWT Token", e);
+                throw new BadCredentialsException("Unable to get JWT Token");
             } catch (ExpiredJwtException e){
                 logger.error("JWT Token is expired", e);
+                throw new BadCredentialsException("JWT Token is expired");
             } catch (MalformedJwtException e){
                 logger.error("JWT Token is malformed", e);
+                throw new BadCredentialsException("JWT Token is malformed");
             }
         } else {
             logger.warn("Authorization header is missing or does not start with Bearer");

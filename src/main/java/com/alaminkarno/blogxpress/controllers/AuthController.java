@@ -3,7 +3,9 @@ package com.alaminkarno.blogxpress.controllers;
 import com.alaminkarno.blogxpress.exceptions.ApiException;
 import com.alaminkarno.blogxpress.payloads.JWTAuthResponse;
 import com.alaminkarno.blogxpress.payloads.JwtAuthRequest;
+import com.alaminkarno.blogxpress.payloads.UserDto;
 import com.alaminkarno.blogxpress.security.JWTTokenHelper;
+import com.alaminkarno.blogxpress.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +28,9 @@ public class AuthController {
 
     @Autowired
     private UserDetailsService userDetailsService;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -51,5 +56,12 @@ public class AuthController {
         } catch (BadCredentialsException e){
             throw new ApiException("Invalid username or password");
         }
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<UserDto> registerUser(@RequestBody UserDto userDto){
+        UserDto registeredUser = this.userService.registerNewUser(userDto);
+
+        return new ResponseEntity<>(registeredUser, HttpStatus.CREATED);
     }
 }

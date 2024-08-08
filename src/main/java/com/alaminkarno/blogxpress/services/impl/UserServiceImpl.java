@@ -1,12 +1,16 @@
 package com.alaminkarno.blogxpress.services.impl;
 
+import com.alaminkarno.blogxpress.config.AppConstants;
+import com.alaminkarno.blogxpress.entities.Role;
 import com.alaminkarno.blogxpress.entities.User;
 import com.alaminkarno.blogxpress.exceptions.ResourceNotFoundException;
 import com.alaminkarno.blogxpress.payloads.UserDto;
+import com.alaminkarno.blogxpress.repositories.RoleRepository;
 import com.alaminkarno.blogxpress.repositories.UserRepository;
 import com.alaminkarno.blogxpress.services.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,6 +24,28 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private RoleRepository roleRepository;
+
+    @Override
+    public UserDto registerNewUser(UserDto userDto) {
+        User user = this.modelMapper.map(userDto,User.class);
+
+        // Encode Password
+        user.setPassword(this.passwordEncoder.encode(user.getPassword()));
+
+        // Get Roles
+        Role role = this.roleRepository.findById(AppConstants.NORMAL_USER).get();
+        user.getRoles().add(role);
+
+        User newUser = this.userRepository.save(user);
+
+        return this.modelMapper.map(newUser,UserDto.class);
+    }
 
     @Override
     public UserDto createUser(UserDto userDto) {

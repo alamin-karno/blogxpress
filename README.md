@@ -56,7 +56,7 @@ BlogXpress is a powerful and intuitive blogging platform built using Spring Boot
 
 4. **Access the application:**
 
-   Open your browser and navigate to `http://localhost:8080`.
+   Open your browser and navigate to `http://localhost:9090`.
 
 ## API Endpoints
 
